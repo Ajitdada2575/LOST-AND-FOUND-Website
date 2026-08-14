@@ -1,12 +1,18 @@
 {
   "name": "lostfound-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "College Lost and Found Management System backend",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js",
+    "dev": "node server.js"
   },
-  "keywords": [],
+  "keywords": [
+    "lost-and-found",
+    "node",
+    "express",
+    "mysql"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
