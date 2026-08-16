@@ -4,6 +4,10 @@ require("dotenv").config();
 
 const healthRoutes = require("./routes/healthRoutes");
 const authRoutes = require("./routes/authRoutes");
+const lostRoutes = require("./routes/lostRoutes");
+const foundRoutes = require("./routes/foundRoutes");
+const matchRoutes = require("./routes/matchRoutes");
+const claimRoutes = require("./routes/claimRoutes");
 
 const app = express();
 
@@ -12,9 +16,15 @@ app.use(express.json());
 
 app.use("/api/health", healthRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/lost", lostRoutes);
+app.use("/api/found", foundRoutes);
+app.use("/api/matches", matchRoutes);
+app.use("/api/claims", claimRoutes);
 
 app.get("/", (req, res) => {
-  res.json({ message: "Lost and Found API is running" });
+  res.json({
+    message: "Lost and Found API is running"
+  });
 });
 
 const PORT = process.env.PORT || 5000;
