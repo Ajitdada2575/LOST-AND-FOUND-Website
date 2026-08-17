@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { createNotification } = require("./notificationController");
 
 const createFoundItem = async (req, res) => {
   try {
@@ -217,7 +218,7 @@ const returnFoundItem = async (req, res) => {
     const userId = req.user.userId;
 
     const [items] = await pool.query(
-      `SELECT user_id, status
+      `SELECT user_id, title, status
        FROM found_items
        WHERE found_item_id = ?`,
       [id]
@@ -246,6 +247,14 @@ const returnFoundItem = async (req, res) => {
        SET status = 'RETURNED'
        WHERE found_item_id = ?`,
       [id]
+    );
+
+    // Create notification for the user who reported the found item
+    await createNotification(
+      userId,
+      "ITEM_RETURNED",
+      "Item Returned",
+      `Your found item "${items[0].title}" has been marked as returned.`
     );
 
     res.json({

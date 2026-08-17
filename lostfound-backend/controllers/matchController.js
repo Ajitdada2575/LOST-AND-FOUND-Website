@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { createNotification } = require("./notificationController");
 
 const normalize = value => {
   if (!value) return "";
@@ -167,6 +168,7 @@ const generateMatchesForLostItem = async (req, res) => {
     const [lostRows] = await pool.query(
       `SELECT
         li.lost_item_id,
+        li.user_id,
         li.category_id,
         li.location_id,
         li.title,
@@ -327,6 +329,30 @@ const generateMatchesForLostItem = async (req, res) => {
     }
 
     matches.sort((a, b) => b.match_score - a.match_score);
+
+    // Create notification when meaningful matches are found
+    if (matches.length > 0) {
+      const message =
+        `A potential match was found for your lost item "${lost.title}".`;
+
+      const [existingNotification] = await pool.query(
+        `SELECT notification_id
+         FROM notifications
+         WHERE user_id = ?
+         AND notification_type = 'POTENTIAL_MATCH'
+         AND message = ?`,
+        [lost.user_id, message]
+      );
+
+      if (existingNotification.length === 0) {
+        await createNotification(
+          lost.user_id,
+          "POTENTIAL_MATCH",
+          "Potential Match Found",
+          message
+        );
+      }
+    }
 
     res.json({
       lost_item_id: Number(lostId),

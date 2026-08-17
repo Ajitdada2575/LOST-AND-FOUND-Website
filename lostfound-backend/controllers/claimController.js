@@ -1,4 +1,5 @@
 const pool = require("../config/db");
+const { createNotification } = require("./notificationController");
 
 const createClaim = async (req, res) => {
   try {
@@ -52,6 +53,14 @@ const createClaim = async (req, res) => {
       [match_id, userId]
     );
 
+    // Create notification for claimant
+    await createNotification(
+      userId,
+      "CLAIM_SUBMITTED",
+      "Claim Submitted",
+      "Your claim has been submitted successfully and is awaiting review."
+    );
+
     res.status(201).json({
       message: "Claim request submitted successfully",
       claimId: result.insertId,
@@ -65,6 +74,7 @@ const createClaim = async (req, res) => {
     });
   }
 };
+
 
 const getMyClaims = async (req, res) => {
   try {
@@ -100,6 +110,7 @@ const getMyClaims = async (req, res) => {
   }
 };
 
+
 const getAllClaims = async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -134,7 +145,6 @@ const getAllClaims = async (req, res) => {
   }
 };
 
-
 const reviewClaim = async (req, res) => {
   try {
     const { id } = req.params;
@@ -154,7 +164,10 @@ const reviewClaim = async (req, res) => {
     }
 
     const [claims] = await pool.query(
-      `SELECT claim_id, status
+      `SELECT
+        claim_id,
+        claimant_user_id,
+        status
        FROM claim_requests
        WHERE claim_id = ?`,
       [id]
@@ -188,6 +201,16 @@ const reviewClaim = async (req, res) => {
       ]
     );
 
+    // Notify claimant only when claim is approved
+    if (status === "APPROVED") {
+      await createNotification(
+        claims[0].claimant_user_id,
+        "CLAIM_APPROVED",
+        "Claim Approved",
+        "Your claim has been approved. Please proceed with the item return process."
+      );
+    }
+
     res.json({
       message: `Claim ${status.toLowerCase()} successfully`,
       claimId: id,
@@ -201,6 +224,8 @@ const reviewClaim = async (req, res) => {
     });
   }
 };
+
+
 module.exports = {
   createClaim,
   getMyClaims,
