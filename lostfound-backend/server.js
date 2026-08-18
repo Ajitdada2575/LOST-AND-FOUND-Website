@@ -9,6 +9,7 @@ const foundRoutes = require("./routes/foundRoutes");
 const matchRoutes = require("./routes/matchRoutes");
 const claimRoutes = require("./routes/claimRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
+const lookupRoutes = require("./routes/lookupRoutes");
 
 const app = express();
 
@@ -22,6 +23,7 @@ app.use("/api/found", foundRoutes);
 app.use("/api/matches", matchRoutes);
 app.use("/api/claims", claimRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/lookups", lookupRoutes);
 
 app.get("/", (req, res) => {
   res.json({
