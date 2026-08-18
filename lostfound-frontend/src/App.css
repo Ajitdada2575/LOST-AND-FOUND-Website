@@ -1,0 +1,469 @@
+/* ---------- Navbar ---------- */
+
+.navbar {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: 64px;
+}
+
+.navbar-brand {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--color-primary-dark);
+}
+.navbar-brand:hover {
+  text-decoration: none;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  flex: 1;
+  justify-content: center;
+}
+
+.navbar-links a {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+.navbar-links a:hover {
+  text-decoration: none;
+  color: var(--color-primary);
+}
+.navbar-links a.active {
+  color: var(--color-primary);
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.navbar-user {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 860px) {
+  .navbar-links {
+    display: none;
+  }
+}
+
+/* ---------- Notification bell ---------- */
+
+.notification-bell {
+  position: relative;
+}
+
+.bell-trigger {
+  position: relative;
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: var(--space-2);
+}
+
+.bell-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: var(--color-danger);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border-radius: 999px;
+  min-width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+}
+
+.bell-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 320px;
+  max-height: 420px;
+  overflow-y: auto;
+  z-index: 30;
+}
+
+.bell-dropdown-header {
+  padding: var(--space-3) var(--space-4);
+  font-weight: 700;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.bell-item {
+  width: 100%;
+  display: flex;
+  gap: var(--space-3);
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  background: none;
+  cursor: pointer;
+}
+.bell-item:hover {
+  background: var(--color-bg);
+}
+.bell-item-unread {
+  background: var(--color-primary-light);
+}
+
+.bell-item-icon {
+  font-size: 1.1rem;
+}
+
+.bell-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.bell-item-title {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.bell-item-message {
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bell-dropdown-footer {
+  display: block;
+  text-align: center;
+  padding: var(--space-3);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  color: #fff;
+  padding: var(--space-7) 0;
+}
+
+.hero-inner {
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 2.4rem;
+  margin-bottom: var(--space-4);
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  opacity: 0.92;
+  max-width: 560px;
+  margin: 0 auto var(--space-5);
+}
+
+.hero-actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-actions .btn-secondary {
+  background: #fff;
+}
+
+.home-section {
+  margin-bottom: var(--space-7);
+}
+
+/* ---------- Auth pages ---------- */
+
+.auth-page {
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-6);
+}
+
+.auth-subtitle {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-5);
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: var(--space-4);
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  color: var(--color-text-muted);
+}
+
+/* ---------- Item cards ---------- */
+
+.item-card {
+  display: block;
+  overflow: hidden;
+  color: inherit;
+}
+.item-card:hover {
+  text-decoration: none;
+  box-shadow: var(--shadow-md);
+}
+
+.item-card-image {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+
+.item-card-body {
+  padding: var(--space-4);
+}
+
+.item-card-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.item-card-title-row h3 {
+  font-size: 1rem;
+  margin-bottom: var(--space-1);
+}
+
+.item-card-meta {
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.item-card-desc {
+  font-size: 0.88rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.item-card-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* ---------- Forms panel ---------- */
+
+.form-panel {
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 560px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Matches ---------- */
+
+.match-card {
+  padding: var(--space-4);
+}
+
+.match-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.match-card-header h3 {
+  font-size: 1rem;
+  margin-bottom: 0;
+}
+
+.match-score-display {
+  text-align: center;
+  margin-bottom: var(--space-3);
+}
+
+.match-score-number {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--color-primary);
+}
+
+.match-score-breakdown {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-4);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-1) var(--space-4);
+  font-size: 0.8rem;
+  color: var(--color-text-muted);
+}
+
+.match-score-breakdown li {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px dashed var(--color-border);
+  padding-bottom: 2px;
+}
+
+.match-score-breakdown li span {
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+/* ---------- Claims ---------- */
+
+.claims-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.claim-card {
+  padding: var(--space-4) var(--space-5);
+}
+
+.claim-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.claim-card-header h3 {
+  margin-bottom: 0;
+  font-size: 1rem;
+}
+
+.claim-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-3);
+  font-size: 0.88rem;
+}
+
+.claim-details-grid .label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+}
+
+.claim-comments {
+  grid-column: 1 / -1;
+}
+
+.claim-review-actions {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.claim-review-actions textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  margin-bottom: var(--space-3);
+}
+
+.claim-review-buttons {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* ---------- Notifications ---------- */
+
+.notifications-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.notification-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+}
+
+.notification-unread {
+  border-left: 3px solid var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.notification-read {
+  opacity: 0.75;
+}
+
+.notification-icon {
+  font-size: 1.3rem;
+}
+
+.notification-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.notification-title-row h3 {
+  font-size: 0.95rem;
+  margin-bottom: var(--space-1);
+}
+
+.notification-time {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
