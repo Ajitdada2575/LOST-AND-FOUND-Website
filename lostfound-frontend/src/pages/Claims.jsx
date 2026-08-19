@@ -2,16 +2,19 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import * as claimService from '../services/claimService';
 
-const STATUS_BADGE = {
-  PENDING: 'badge-warning',
-  APPROVED: 'badge-success',
-  REJECTED: 'badge-danger',
-  COMPLETED: 'badge-primary',
+const STATUS_ICON = {
+  PENDING: '⏳',
+  APPROVED: '✅',
+  REJECTED: '❌',
+  COMPLETED: '🎉',
 };
 
-function StatusBadge({ status }) {
-  return <span className={`badge ${STATUS_BADGE[status] || 'badge-neutral'}`}>{status}</span>;
-}
+const STATUS_COLOR = {
+  PENDING: '#F59E0B',
+  APPROVED: '#16A34A',
+  REJECTED: '#DC2626',
+  COMPLETED: '#0D9488',
+};
 
 export default function Claims() {
   const { isAdmin } = useAuth();
@@ -37,7 +40,6 @@ export default function Claims() {
 
   useEffect(() => {
     loadClaims();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isAdmin]);
 
   async function handleReview(claim, status) {
@@ -49,7 +51,7 @@ export default function Claims() {
         status,
         reviewerComments: comments[claim.claim_id] || '',
       });
-      setActionMessage(`Claim #${claim.claim_id} marked as ${status}.`);
+      setActionMessage(`✓ Claim #${claim.claim_id} marked as ${status}.`);
       await loadClaims();
     } catch (err) {
       setError(err.message || 'Could not update this claim.');
@@ -59,87 +61,121 @@ export default function Claims() {
   }
 
   return (
-    <div className="container page">
-      <div className="page-header">
-        <h1>{isAdmin ? 'Admin Claim Review' : 'My Claims'}</h1>
-      </div>
+    <div className="page page-claims">
+      <div className="container">
+        <h1>{isAdmin ? '📋 Admin Claim Review' : '📋 My Claims'}</h1>
 
-      {actionMessage && <div className="form-success-banner">{actionMessage}</div>}
-      {error && <div className="form-error-banner">{error}</div>}
+        {actionMessage && <div className="alert alert-success" style={{ marginBottom: 'var(--space-4)' }}>{actionMessage}</div>}
+        {error && <div className="alert alert-error" style={{ marginBottom: 'var(--space-4)' }}>{error}</div>}
 
-      {loading ? (
-        <div className="loading-state">Loading claims…</div>
-      ) : claims.length === 0 ? (
-        <div className="empty-state">
-          {isAdmin ? 'There are no claims to review yet.' : "You haven't submitted any claims yet."}
-        </div>
-      ) : (
-        <div className="claims-list">
-          {claims.map((claim) => (
-            <div key={claim.claim_id} className="card claim-card">
-              <div className="claim-card-header">
-                <h3>Claim #{claim.claim_id}</h3>
-                <StatusBadge status={claim.status} />
-              </div>
-
-              <div className="claim-details-grid">
-                <div><span className="label">Match ID</span>{claim.match_id}</div>
-                {claim.lost_item_id !== undefined && (
-                  <div><span className="label">Lost Item</span>{claim.lost_item_id}</div>
-                )}
-                {claim.found_item_id !== undefined && (
-                  <div><span className="label">Found Item</span>{claim.found_item_id}</div>
-                )}
-                {claim.match_score !== undefined && (
-                  <div><span className="label">Match Score</span>{claim.match_score}%</div>
-                )}
-                {claim.match_classification && (
-                  <div><span className="label">Classification</span>{claim.match_classification?.replaceAll('_', ' ')}</div>
-                )}
-                {isAdmin && claim.claimant_user_id !== undefined && (
-                  <div><span className="label">Claimant</span>{claim.claimant_name || claim.claimant_user_id}</div>
-                )}
-                {claim.submitted_at && (
-                  <div><span className="label">Submitted</span>{new Date(claim.submitted_at).toLocaleString()}</div>
-                )}
-                {claim.reviewed_at && (
-                  <div><span className="label">Reviewed</span>{new Date(claim.reviewed_at).toLocaleString()}</div>
-                )}
-                {claim.reviewer_comments && (
-                  <div className="claim-comments"><span className="label">Reviewer Comments</span>{claim.reviewer_comments}</div>
-                )}
-              </div>
-
-              {isAdmin && claim.status === 'PENDING' && (
-                <div className="claim-review-actions">
-                  <textarea
-                    placeholder="Reviewer comments (optional)"
-                    rows={2}
-                    value={comments[claim.claim_id] || ''}
-                    onChange={(e) => setComments((prev) => ({ ...prev, [claim.claim_id]: e.target.value }))}
-                  />
-                  <div className="claim-review-buttons">
-                    <button
-                      className="btn btn-primary btn-sm"
-                      onClick={() => handleReview(claim, 'APPROVED')}
-                      disabled={reviewingId === claim.claim_id}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleReview(claim, 'REJECTED')}
-                      disabled={reviewingId === claim.claim_id}
-                    >
-                      Reject
-                    </button>
-                  </div>
+        {loading ? (
+          <div className="loading-state">Loading claims...</div>
+        ) : claims.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">{isAdmin ? '📋' : '🔍'}</div>
+            <h3>{isAdmin ? 'No Claims to Review' : 'No Claims Yet'}</h3>
+            <p>
+              {isAdmin
+                ? 'There are no claims waiting for review.'
+                : "You haven't submitted any claims yet. Find matches and submit claims!"}
+            </p>
+          </div>
+        ) : (
+          <div className="claims-list">
+            {claims.map((claim) => (
+              <div key={claim.claim_id} className="card claim-card">
+                <div className="claim-status-row">
+                  <h3 style={{ marginBottom: 0 }}>Claim #{claim.claim_id}</h3>
+                  <span
+                    className="badge"
+                    style={{
+                      background: STATUS_COLOR[claim.status] || '#9CA3AF',
+                      color: 'white',
+                    }}
+                  >
+                    {STATUS_ICON[claim.status]} {claim.status}
+                  </span>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+
+                <div className="claim-details">
+                  <div className="claim-detail-item">
+                    <div className="claim-detail-label">Match ID</div>
+                    <div style={{ fontWeight: 600 }}>{claim.match_id}</div>
+                  </div>
+                  {claim.lost_item_id !== undefined && (
+                    <div className="claim-detail-item">
+                      <div className="claim-detail-label">Lost Item</div>
+                      <div style={{ fontWeight: 600 }}>#{claim.lost_item_id}</div>
+                    </div>
+                  )}
+                  {claim.found_item_id !== undefined && (
+                    <div className="claim-detail-item">
+                      <div className="claim-detail-label">Found Item</div>
+                      <div style={{ fontWeight: 600 }}>#{claim.found_item_id}</div>
+                    </div>
+                  )}
+                  {claim.match_score !== undefined && (
+                    <div className="claim-detail-item">
+                      <div className="claim-detail-label">Match Score</div>
+                      <div style={{ fontWeight: 600 }}>{claim.match_score}%</div>
+                    </div>
+                  )}
+                  {claim.submitted_at && (
+                    <div className="claim-detail-item">
+                      <div className="claim-detail-label">Submitted</div>
+                      <div style={{ fontWeight: 600 }}>{new Date(claim.submitted_at).toLocaleDateString()}</div>
+                    </div>
+                  )}
+                  {isAdmin && claim.claimant_user_id !== undefined && (
+                    <div className="claim-detail-item">
+                      <div className="claim-detail-label">Claimant</div>
+                      <div style={{ fontWeight: 600 }}>{claim.claimant_name || `User #${claim.claimant_user_id}`}</div>
+                    </div>
+                  )}
+                </div>
+
+                {claim.reviewer_comments && (
+                  <div style={{ padding: 'var(--space-3)', background: 'var(--color-bg-tertiary)', borderRadius: 'var(--radius-md)', marginBottom: 'var(--space-3)' }}>
+                    <div className="claim-detail-label">Reviewer Comments</div>
+                    <p style={{ marginBottom: 0 }}>{claim.reviewer_comments}</p>
+                  </div>
+                )}
+
+                {isAdmin && claim.status === 'PENDING' && (
+                  <div className="claim-review-panel">
+                    <div className="field">
+                      <label>Comments (optional)</label>
+                      <textarea
+                        rows={2}
+                        placeholder="Add reviewer comments..."
+                        value={comments[claim.claim_id] || ''}
+                        onChange={(e) => setComments((prev) => ({ ...prev, [claim.claim_id]: e.target.value }))}
+                      />
+                    </div>
+                    <div className="claim-review-actions">
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => handleReview(claim, 'APPROVED')}
+                        disabled={reviewingId === claim.claim_id}
+                      >
+                        ✅ Approve
+                      </button>
+                      <button
+                        className="btn"
+                        style={{ background: '#DC2626', color: 'white' }}
+                        onClick={() => handleReview(claim, 'REJECTED')}
+                        disabled={reviewingId === claim.claim_id}
+                      >
+                        ❌ Reject
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

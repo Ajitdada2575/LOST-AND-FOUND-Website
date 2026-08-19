@@ -1,0 +1,356 @@
+/* ============================================================================
+   HOW IT WORKS PAGE — scoped styles (does not touch existing App.css rules)
+   ============================================================================ */
+
+.hiw-section {
+  margin-bottom: var(--space-8);
+}
+
+.hiw-section-title {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-2);
+}
+
+.hiw-section-subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-5);
+  max-width: 720px;
+}
+
+.hiw-eyebrow {
+  display: inline-block;
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-primary-700);
+  background: var(--color-primary-50);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  margin-bottom: var(--space-3);
+}
+
+/* Hero */
+.hiw-hero {
+  background: linear-gradient(135deg, var(--color-primary-900) 0%, var(--color-primary-800) 55%, var(--color-accent) 100%);
+  color: white;
+  padding: var(--space-8) 0;
+  text-align: center;
+}
+
+.hiw-hero h1 {
+  color: white;
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--space-3);
+}
+
+.hiw-hero p {
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 640px;
+  margin: 0 auto;
+  font-size: var(--font-size-lg);
+}
+
+/* Flow chain (arrows) */
+.hiw-flow-chain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+}
+
+.hiw-flow-step {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+  white-space: nowrap;
+}
+
+.hiw-flow-arrow {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: var(--font-size-lg);
+}
+
+/* Vertical arrow flow (overview) */
+.hiw-vertical-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.hiw-vertical-flow .hiw-vf-item {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-5);
+  text-align: center;
+  font-weight: 600;
+  width: 100%;
+  box-shadow: var(--shadow-xs);
+}
+
+.hiw-vertical-flow .hiw-vf-arrow {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-lg);
+  line-height: 1;
+}
+
+/* Category / Location tables */
+.hiw-id-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: var(--space-3);
+}
+
+.hiw-id-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+}
+
+.hiw-id-badge {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--color-primary-100);
+  color: var(--color-primary-800);
+  font-weight: 700;
+  font-size: var(--font-size-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Step timeline */
+.hiw-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.hiw-step {
+  display: flex;
+  gap: var(--space-4);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: var(--shadow-xs);
+}
+
+.hiw-step-number {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+}
+
+.hiw-step h4 {
+  margin-bottom: var(--space-1);
+}
+
+.hiw-step p {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.hiw-step ul {
+  margin: var(--space-2) 0 0 var(--space-4);
+  color: var(--color-text-secondary);
+}
+
+.hiw-step ul li {
+  margin-bottom: var(--space-1);
+}
+
+/* Two-column step groups (lost vs found) */
+.hiw-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+@media (max-width: 860px) {
+  .hiw-two-col {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hiw-col-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.hiw-col-header h3 {
+  margin: 0;
+}
+
+/* Process cards row (claim stages, matching) */
+.hiw-process-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: stretch;
+  justify-content: center;
+}
+
+.hiw-process-card {
+  flex: 1 1 160px;
+  max-width: 220px;
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  text-align: center;
+  box-shadow: var(--shadow-xs);
+}
+
+.hiw-process-card .hiw-process-icon {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--space-2);
+}
+
+.hiw-process-card h4 {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--space-1);
+}
+
+.hiw-process-card p {
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+.hiw-process-arrow {
+  align-self: center;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xl);
+}
+
+/* Matching diagram */
+.hiw-match-diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.hiw-match-inputs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hiw-match-box {
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  color: white;
+}
+
+/* Example section */
+.hiw-example-card {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+}
+
+.hiw-example-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  margin: var(--space-5) 0;
+}
+
+@media (max-width: 700px) {
+  .hiw-example-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hiw-example-item {
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.hiw-example-item.lost {
+  background: var(--color-lost-bg);
+  border: 1px solid var(--color-lost-muted);
+}
+
+.hiw-example-item.found {
+  background: var(--color-found-bg);
+  border: 1px solid var(--color-found-muted);
+}
+
+/* Best practices checklist */
+.hiw-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-3);
+}
+
+.hiw-checklist-item {
+  display: flex;
+  gap: var(--space-2);
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+}
+
+/* CTA at Home page */
+.hiw-home-cta {
+  background: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5) var(--space-6);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.hiw-home-cta-text h3 {
+  margin-bottom: var(--space-1);
+}
+
+.hiw-home-cta-text p {
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .hiw-home-cta {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+}

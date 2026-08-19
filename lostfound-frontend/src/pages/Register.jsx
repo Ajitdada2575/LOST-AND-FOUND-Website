@@ -51,7 +51,7 @@ export default function Register() {
         phone: form.phone || undefined,
         password: form.password,
       });
-      setSuccess('Account created. Redirecting to login…');
+      setSuccess('Account created! Redirecting to login...');
       setTimeout(() => navigate('/login'), 1200);
     } catch (err) {
       setError(err.message || 'Registration failed. Please try again.');
@@ -61,54 +61,79 @@ export default function Register() {
   }
 
   return (
-    <div className="container page auth-page">
+    <div className="auth-page auth-page-register">
       <div className="card auth-card">
-        <h1>Create your account</h1>
-        <p className="auth-subtitle">Join the campus Lost & Found community.</p>
+        <div className="auth-header">
+          <h1>Create Account</h1>
+          <p className="auth-subtitle">Join the Lost & Found community</p>
+        </div>
 
-        {error && <div className="form-error-banner">{error}</div>}
-        {success && <div className="form-success-banner">{success}</div>}
+        {error && <div className="alert alert-error">{error}</div>}
+        {success && <div className="alert alert-success">{success}</div>}
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="field">
-            <label htmlFor="name">Full name</label>
-            <input id="name" name="name" value={form.name} onChange={handleChange} />
-          </div>
-
-          <div className="field">
-            <label htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" value={form.email} onChange={handleChange} />
-          </div>
-
-          <div className="field">
-            <label htmlFor="phone">Phone (optional)</label>
-            <input id="phone" name="phone" value={form.phone} onChange={handleChange} />
-          </div>
-
-          <div className="field">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="name">Full Name</label>
             <input
-              id="password"
-              name="password"
-              type="password"
-              value={form.password}
+              id="name"
+              name="name"
+              value={form.name}
               onChange={handleChange}
+              placeholder="John Doe"
             />
           </div>
 
           <div className="field">
-            <label htmlFor="confirmPassword">Confirm password</label>
+            <label htmlFor="email">Email Address</label>
             <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              value={form.confirmPassword}
+              id="email"
+              name="email"
+              type="email"
+              value={form.email}
               onChange={handleChange}
+              placeholder="you@example.com"
             />
+          </div>
+
+          <div className="field">
+            <label htmlFor="phone">Phone (Optional)</label>
+            <input
+              id="phone"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              placeholder="+1 (555) 000-0000"
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="field">
+              <label htmlFor="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                placeholder="••••••••"
+              />
+            </div>
           </div>
 
           <button type="submit" className="btn btn-primary" disabled={submitting} style={{ width: '100%' }}>
-            {submitting ? 'Creating account…' : 'Register'}
+            {submitting ? 'Creating account…' : 'Create Account'}
           </button>
         </form>
 

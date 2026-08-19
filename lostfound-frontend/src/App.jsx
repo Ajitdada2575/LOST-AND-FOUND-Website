@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 
 import Home from './pages/Home';
@@ -11,8 +12,8 @@ import FoundItems from './pages/FoundItems';
 import Matches from './pages/Matches';
 import Claims from './pages/Claims';
 import Notifications from './pages/Notifications';
+import HowItWorks from './pages/HowItWorks';
 
-// Keeps authenticated users off Login/Register.
 function GuestRoute({ children }) {
   const { isAuthenticated, loading } = useAuth();
   if (loading) return <div className="loading-state">Loading…</div>;
@@ -27,6 +28,7 @@ function AppRoutes() {
       <main>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/how-it-works" element={<HowItWorks />} />
           <Route
             path="/login"
             element={
@@ -94,6 +96,7 @@ function AppRoutes() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
+      <Footer />
     </>
   );
 }

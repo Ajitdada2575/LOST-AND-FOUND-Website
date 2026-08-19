@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as notificationService from '../services/notificationService';
 
 const TYPE_ICON = {
-  POTENTIAL_MATCH: '🔍',
+  POTENTIAL_MATCH: '🔗',
   CLAIM_SUBMITTED: '📨',
   CLAIM_APPROVED: '✅',
   ITEM_RETURNED: '📦',
@@ -46,44 +46,52 @@ export default function Notifications() {
   }
 
   return (
-    <div className="container page">
-      <div className="page-header">
-        <h1>Notifications</h1>
-      </div>
+    <div className="page page-notifications">
+      <div className="container">
+        <h1>🔔 Notifications</h1>
 
-      {error && <div className="form-error-banner">{error}</div>}
+        {error && <div className="alert alert-error" style={{ marginBottom: 'var(--space-4)' }}>{error}</div>}
 
-      {loading ? (
-        <div className="loading-state">Loading notifications…</div>
-      ) : notifications.length === 0 ? (
-        <div className="empty-state">You don't have any notifications yet.</div>
-      ) : (
-        <div className="notifications-list">
-          {notifications.map((n) => (
-            <div
-              key={n.notification_id}
-              className={`card notification-row ${n.is_read ? 'notification-read' : 'notification-unread'}`}
-            >
-              <span className="notification-icon">{TYPE_ICON[n.notification_type] || '🔔'}</span>
-              <div className="notification-body">
-                <div className="notification-title-row">
-                  <h3>{n.title}</h3>
-                  {!n.is_read && <span className="badge badge-info">New</span>}
+        {loading ? (
+          <div className="loading-state">Loading notifications...</div>
+        ) : notifications.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">🔔</div>
+            <h3>All Caught Up!</h3>
+            <p>You don't have any notifications right now.</p>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
+            {notifications.map((n) => (
+              <div
+                key={n.notification_id}
+                className="notification-item"
+                style={{
+                  background: n.is_read ? 'var(--color-surface)' : 'var(--color-primary-50)',
+                  borderLeft: `4px solid ${n.is_read ? 'var(--color-border)' : 'var(--color-primary-700)'}`,
+                }}
+              >
+                <span className="notification-icon">{TYPE_ICON[n.notification_type] || '🔔'}</span>
+                <div className="notification-content" style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-1)' }}>
+                    <h3 style={{ marginBottom: 0 }}>{n.title}</h3>
+                    {!n.is_read && <span className="badge badge-pending">NEW</span>}
+                  </div>
+                  <p style={{ marginBottom: 'var(--space-1)' }}>{n.message}</p>
+                  <span className="notification-time">
+                    {n.created_at ? new Date(n.created_at).toLocaleString() : ''}
+                  </span>
                 </div>
-                <p>{n.message}</p>
-                <span className="notification-time">
-                  {n.created_at ? new Date(n.created_at).toLocaleString() : ''}
-                </span>
+                {!n.is_read && (
+                  <button className="btn btn-secondary btn-sm" onClick={() => handleMarkRead(n)}>
+                    Mark as read
+                  </button>
+                )}
               </div>
-              {!n.is_read && (
-                <button className="btn btn-outline btn-sm" onClick={() => handleMarkRead(n)}>
-                  Mark as read
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -4,16 +4,16 @@ import * as lostItemService from '../services/lostItemService';
 import * as matchService from '../services/matchService';
 import * as claimService from '../services/claimService';
 
-function classificationBadgeClass(classification) {
+function classificationColor(classification) {
   switch (classification) {
     case 'VERY_STRONG_POTENTIAL_MATCH':
-      return 'badge-success';
+      return '#16A34A';
     case 'STRONG_POTENTIAL_MATCH':
-      return 'badge-primary';
+      return '#0D9488';
     case 'POSSIBLE_MATCH':
-      return 'badge-warning';
+      return '#F59E0B';
     default:
-      return 'badge-neutral';
+      return '#6B7280';
   }
 }
 
@@ -40,7 +40,6 @@ export default function Matches() {
     loadLostItems();
   }, []);
 
-  // GET /api/matches/lost/:lostId — returns a direct array of saved matches.
   async function loadSavedMatches(lostItemId) {
     if (!lostItemId) return;
     setLoading(true);
@@ -68,8 +67,6 @@ export default function Matches() {
     setSearchParams(id ? { lostItemId: id } : {});
   }
 
-  // POST /api/matches/lost/:lostId/generate does not return match_id, so once
-  // generation succeeds we re-fetch the saved matches to get IDs for claiming.
   async function handleGenerateMatches() {
     if (!selectedLostItemId) return;
     setGenerating(true);
@@ -95,7 +92,7 @@ export default function Matches() {
     setError('');
     try {
       await claimService.createClaim(match.match_id);
-      setClaimMessage(`Claim submitted for "${match.title}".`);
+      setClaimMessage(`✅ Claim submitted for "${match.title}"!`);
     } catch (err) {
       setError(err.message || 'Could not submit claim.');
     } finally {
@@ -104,85 +101,117 @@ export default function Matches() {
   }
 
   return (
-    <div className="container page">
-      <div className="page-header">
-        <h1>Potential Matches</h1>
-      </div>
+    <div className="page page-matches">
+      <div className="container">
+        <h1>🔗 Potential Matches</h1>
 
-      <div className="card form-panel">
-        <div className="field">
-          <label htmlFor="lostItem">Select one of your lost items</label>
-          <select id="lostItem" value={selectedLostItemId} onChange={handleSelectItem}>
-            <option value="">Choose a lost item…</option>
-            {myLostItems.map((item) => (
-              <option key={item.lost_item_id} value={item.lost_item_id}>
-                {item.title}
-              </option>
+        <div className="card form-panel">
+          <div className="field">
+            <label htmlFor="lostItem">Select a lost item to find matches</label>
+            <select id="lostItem" value={selectedLostItemId} onChange={handleSelectItem}>
+              <option value="">Choose a lost item…</option>
+              {myLostItems.map((item) => (
+                <option key={item.lost_item_id} value={item.lost_item_id}>
+                  {item.title}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            className="btn btn-primary"
+            onClick={handleGenerateMatches}
+            disabled={!selectedLostItemId || generating || loading}
+          >
+            {generating ? '⏳ Generating…' : '🔄 Refresh Matches'}
+          </button>
+        </div>
+
+        {claimMessage && <div className="alert alert-success" style={{ marginBottom: 'var(--space-4)' }}>{claimMessage}</div>}
+        {error && <div className="alert alert-error" style={{ marginBottom: 'var(--space-4)' }}>{error}</div>}
+
+        {!selectedLostItemId ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">🔗</div>
+            <h3>Select a Lost Item</h3>
+            <p>Choose one of your lost items to see potential matches with found items.</p>
+          </div>
+        ) : loading ? (
+          <div className="loading-state">Searching for matches…</div>
+        ) : matches.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">❌</div>
+            <h3>No Matches Yet</h3>
+            <p>No potential matches found for this item. Try again later!</p>
+          </div>
+        ) : (
+          <div className="grid">
+            {matches.map((match) => (
+              <div key={match.match_id} className="card match-card">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--space-3)' }}>
+                  <h3 style={{ marginBottom: 0 }}>{match.title}</h3>
+                  <span
+                    className="badge"
+                    style={{
+                      background: classificationColor(match.match_classification),
+                      color: 'white',
+                    }}
+                  >
+                    {match.match_classification?.replace(/_/g, ' ')}
+                  </span>
+                </div>
+
+                <div className="match-score" style={{ marginBottom: 'var(--space-4)' }}>
+                  {match.match_score}%
+                </div>
+
+                <div className="score-breakdown">
+                  <div className="score-item">
+                    <label>Category</label>
+                    <span>{match.category_score}</span>
+                  </div>
+                  <div className="score-item">
+                    <label>Color</label>
+                    <span>{match.color_score}</span>
+                  </div>
+                  <div className="score-item">
+                    <label>Brand</label>
+                    <span>{match.brand_score}</span>
+                  </div>
+                  <div className="score-item">
+                    <label>Location</label>
+                    <span>{match.location_score}</span>
+                  </div>
+                  <div className="score-item">
+                    <label>Date/Time</label>
+                    <span>{match.datetime_score}</span>
+                  </div>
+                  <div className="score-item">
+                    <label>Attributes</label>
+                    <span>{match.specific_attribute_score}</span>
+                  </div>
+                </div>
+
+                {match.description && <p style={{ fontSize: 'var(--font-size-sm)', marginBottom: 'var(--space-3)' }}>{match.description}</p>}
+
+                <p style={{ fontSize: 'var(--font-size-xs)', color: 'var(--color-text-secondary)', marginBottom: 'var(--space-3)' }}>
+                  📅 {match.found_date && new Date(match.found_date).toLocaleDateString()}
+                  {match.approximate_time && ` · ⏰ ${match.approximate_time}`}
+                  {match.status && ` · ${match.status}`}
+                </p>
+
+                <button
+                  className="btn btn-primary"
+                  onClick={() => handleClaim(match)}
+                  disabled={claimingMatchId === match.match_id}
+                  style={{ width: '100%' }}
+                >
+                  {claimingMatchId === match.match_id ? '⏳ Submitting…' : '✓ Submit Claim'}
+                </button>
+              </div>
             ))}
-          </select>
-        </div>
-        <button
-          className="btn btn-secondary btn-sm"
-          onClick={handleGenerateMatches}
-          disabled={!selectedLostItemId || generating || loading}
-        >
-          {generating ? 'Generating…' : 'Refresh Matches'}
-        </button>
+          </div>
+        )}
       </div>
-
-      {claimMessage && <div className="form-success-banner">{claimMessage}</div>}
-      {error && <div className="form-error-banner">{error}</div>}
-
-      {!selectedLostItemId ? (
-        <div className="empty-state">Select a lost item above to see its potential matches.</div>
-      ) : loading ? (
-        <div className="loading-state">Loading matches…</div>
-      ) : matches.length === 0 ? (
-        <div className="empty-state">No potential matches found for this item yet.</div>
-      ) : (
-        <div className="grid">
-          {matches.map((match) => (
-            <div key={match.match_id} className="card match-card">
-              <div className="match-card-header">
-                <h3>{match.title}</h3>
-                <span className={`badge ${classificationBadgeClass(match.match_classification)}`}>
-                  {match.match_classification?.replaceAll('_', ' ')}
-                </span>
-              </div>
-
-              <div className="match-score-display">
-                <span className="match-score-number">{match.match_score}%</span>
-              </div>
-
-              <ul className="match-score-breakdown">
-                <li>Category <span>{match.category_score}</span></li>
-                <li>Color <span>{match.color_score}</span></li>
-                <li>Brand <span>{match.brand_score}</span></li>
-                <li>Location <span>{match.location_score}</span></li>
-                <li>Date/Time <span>{match.datetime_score}</span></li>
-                <li>Attributes <span>{match.specific_attribute_score}</span></li>
-                <li>Description <span>{match.description_score}</span></li>
-              </ul>
-
-              {match.description && <p className="item-card-desc">{match.description}</p>}
-
-              <p className="item-card-meta">
-                {match.found_date && new Date(match.found_date).toLocaleDateString()}
-                {match.approximate_time && ` · ${match.approximate_time}`}
-                {match.status && ` · ${match.status}`}
-              </p>
-
-              <button
-                className="btn btn-primary btn-sm"
-                onClick={() => handleClaim(match)}
-                disabled={claimingMatchId === match.match_id}
-              >
-                {claimingMatchId === match.match_id ? 'Submitting…' : 'Submit Claim'}
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }

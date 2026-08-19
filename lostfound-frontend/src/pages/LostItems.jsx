@@ -113,132 +113,168 @@ export default function LostItems() {
   }
 
   return (
-    <div className="container page">
-      <div className="page-header">
-        <h1>Lost Items</h1>
-        <button className="btn btn-primary" onClick={openCreateForm}>
-          + Report Lost Item
-        </button>
-      </div>
-
-      <div className="field" style={{ maxWidth: 360 }}>
-        <input
-          placeholder="Search lost items…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-
-      {showForm && (
-        <div className="card form-panel">
-          <div className="page-header">
-            <h2>{editingId ? 'Edit Lost Item' : 'Report a Lost Item'}</h2>
-            <button className="btn btn-outline btn-sm" onClick={closeForm}>
-              Cancel
-            </button>
-          </div>
-
-          {formError && <div className="form-error-banner">{formError}</div>}
-
-          <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label htmlFor="title">Title</label>
-              <input id="title" name="title" value={form.title} onChange={handleChange} />
-            </div>
-            <div className="field">
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                rows={3}
-                value={form.description}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="lost_date">Lost date</label>
-                <input
-                  id="lost_date"
-                  name="lost_date"
-                  type="date"
-                  value={form.lost_date}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="approximate_time">Approximate time</label>
-                <input
-                  id="approximate_time"
-                  name="approximate_time"
-                  type="time"
-                  value={form.approximate_time}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="category_id">Category ID</label>
-                <input
-                  id="category_id"
-                  name="category_id"
-                  value={form.category_id}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="location_id">Location ID</label>
-                <input
-                  id="location_id"
-                  name="location_id"
-                  value={form.location_id}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="field">
-              <label htmlFor="image_url">Image URL (optional)</label>
-              <input id="image_url" name="image_url" value={form.image_url} onChange={handleChange} />
-            </div>
-
-            <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? 'Saving…' : editingId ? 'Save Changes' : 'Report Item'}
-            </button>
-          </form>
+    <div className="page page-lost-items">
+      <div className="container">
+        <div className="page-header">
+          <h1>Lost Items</h1>
+          <button className="btn btn-lost" onClick={openCreateForm}>
+            ➕ Report Lost Item
+          </button>
         </div>
-      )}
 
-      {error && <div className="form-error-banner">{error}</div>}
+        {showForm && (
+          <div className="card form-panel">
+            <div className="page-header">
+              <h2>{editingId ? 'Edit Lost Item' : 'Report a Lost Item'}</h2>
+              <button className="btn btn-secondary btn-sm" onClick={closeForm}>
+                Cancel
+              </button>
+            </div>
 
-      {loading ? (
-        <div className="loading-state">Loading lost items…</div>
-      ) : filteredItems.length === 0 ? (
-        <div className="empty-state">No lost items found.</div>
-      ) : (
-        <div className="grid">
-          {filteredItems.map((item) => (
-            <div key={item.lost_item_id} className="card item-card">
-              {item.image_url && <img src={item.image_url} alt={item.title} className="item-card-image" />}
-              <div className="item-card-body">
-                <div className="item-card-title-row">
-                  <h3>{item.title}</h3>
-                  <span className="badge badge-neutral">{item.status}</span>
+            {formError && <div className="alert alert-error">{formError}</div>}
+
+            <form onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="field">
+                  <label htmlFor="title">Item Title *</label>
+                  <input
+                    id="title"
+                    name="title"
+                    value={form.title}
+                    onChange={handleChange}
+                    placeholder="e.g., Black Leather Wallet"
+                  />
                 </div>
-                {item.lost_date && (
-                  <p className="item-card-meta">Lost on {new Date(item.lost_date).toLocaleDateString()}</p>
-                )}
-                <p className="item-card-desc">{item.description}</p>
-                {item.user_id === user?.userId && (
-                  <button className="btn btn-outline btn-sm" onClick={() => openEditForm(item)}>
-                    Edit
-                  </button>
-                )}
+                <div className="field">
+                  <label htmlFor="category_id">Category ID</label>
+                  <input
+                    id="category_id"
+                    name="category_id"
+                    value={form.category_id}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+
+              <div className="field">
+                <label htmlFor="description">Description *</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={3}
+                  value={form.description}
+                  onChange={handleChange}
+                  placeholder="Describe the item in detail..."
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="field">
+                  <label htmlFor="lost_date">Lost Date *</label>
+                  <input
+                    id="lost_date"
+                    name="lost_date"
+                    type="date"
+                    value={form.lost_date}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="approximate_time">Approximate Time</label>
+                  <input
+                    id="approximate_time"
+                    name="approximate_time"
+                    type="time"
+                    value={form.approximate_time}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="field">
+                  <label htmlFor="location_id">Location ID</label>
+                  <input
+                    id="location_id"
+                    name="location_id"
+                    value={form.location_id}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="image_url">Image URL</label>
+                  <input
+                    id="image_url"
+                    name="image_url"
+                    value={form.image_url}
+                    onChange={handleChange}
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="btn btn-primary" disabled={submitting} style={{ minWidth: '120px' }}>
+                {submitting ? 'Saving…' : editingId ? 'Update Item' : 'Report Item'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {error && <div className="alert alert-error" style={{ marginBottom: 'var(--space-4)' }}>{error}</div>}
+
+        <div className="search-section">
+          <div className="search-input-wrapper">
+            <span className="search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search lost items..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
-      )}
+
+        {loading ? (
+          <div className="loading-state">Loading lost items...</div>
+        ) : filteredItems.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">🔴</div>
+            <h3>{search ? 'No matches found' : 'No lost items yet'}</h3>
+            <p>{search ? 'Try a different search' : 'Be the first to report a lost item'}</p>
+            {!search && (
+              <button className="btn btn-lost" onClick={openCreateForm} style={{ marginTop: 'var(--space-3)' }}>
+                Report Lost Item
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid">
+            {filteredItems.map((item) => (
+              <div key={item.lost_item_id} className="card card-lost item-card">
+                {item.image_url && <img src={item.image_url} alt={item.title} className="item-card-image" />}
+                <div className="item-card-body">
+                  <div className="item-card-header">
+                    <h3>{item.title}</h3>
+                    <span className="badge badge-lost">🟠 Lost</span>
+                  </div>
+                  <div className="item-card-meta">
+                    📅 {item.lost_date ? new Date(item.lost_date).toLocaleDateString() : 'Unknown'}
+                    {item.approximate_time && ` · ⏰ ${item.approximate_time}`}
+                  </div>
+                  <p className="item-card-description">{item.description}</p>
+                  {item.user_id === user?.userId && (
+                    <div className="item-card-actions">
+                      <button className="btn btn-secondary btn-sm" onClick={() => openEditForm(item)}>
+                        ✏️ Edit
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

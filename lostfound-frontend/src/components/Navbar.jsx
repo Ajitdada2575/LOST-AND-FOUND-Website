@@ -13,12 +13,13 @@ export default function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="container navbar-inner">
+      <div className="navbar-inner">
         <NavLink to="/" className="navbar-brand">
-          🧭 Lost & Found
+          <span>🔍</span>
+          Lost & Found
         </NavLink>
 
-        <nav className="navbar-links">
+        <nav className="navbar-nav">
           <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
             Home
           </NavLink>
@@ -29,13 +30,18 @@ export default function Navbar() {
             Found Items
           </NavLink>
           {isAuthenticated && (
+            <NavLink to="/matches" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Matches
+            </NavLink>
+          )}
+          {isAuthenticated && (
             <NavLink to="/claims" className={({ isActive }) => (isActive ? 'active' : '')}>
               My Claims
             </NavLink>
           )}
           {isAdmin && (
             <NavLink to="/admin/claims" className={({ isActive }) => (isActive ? 'active' : '')}>
-              Admin Review
+              Admin
             </NavLink>
           )}
         </nav>
@@ -45,13 +51,13 @@ export default function Navbar() {
             <>
               <NotificationBell />
               <span className="navbar-user">{user?.name}</span>
-              <button className="btn btn-outline btn-sm" onClick={handleLogout}>
+              <button className="btn btn-secondary btn-sm" onClick={handleLogout}>
                 Logout
               </button>
             </>
           ) : (
             <>
-              <NavLink to="/login" className="btn btn-outline btn-sm">
+              <NavLink to="/login" className="btn btn-secondary btn-sm">
                 Login
               </NavLink>
               <NavLink to="/register" className="btn btn-primary btn-sm">

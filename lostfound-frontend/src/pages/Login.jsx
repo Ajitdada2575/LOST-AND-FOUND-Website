@@ -37,16 +37,18 @@ export default function Login() {
   }
 
   return (
-    <div className="container page auth-page">
+    <div className="auth-page auth-page-login">
       <div className="card auth-card">
-        <h1>Welcome back</h1>
-        <p className="auth-subtitle">Sign in to report and track lost & found items.</p>
+        <div className="auth-header">
+          <h1>Welcome Back</h1>
+          <p className="auth-subtitle">Sign in to your Lost & Found account</p>
+        </div>
 
-        {error && <div className="form-error-banner">{error}</div>}
+        {error && <div className="alert alert-error">{error}</div>}
 
         <form onSubmit={handleSubmit} noValidate>
           <div className="field">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email Address</label>
             <input
               id="email"
               name="email"
@@ -54,6 +56,7 @@ export default function Login() {
               autoComplete="email"
               value={form.email}
               onChange={handleChange}
+              placeholder="you@example.com"
             />
           </div>
 
@@ -66,16 +69,17 @@ export default function Login() {
               autoComplete="current-password"
               value={form.password}
               onChange={handleChange}
+              placeholder="••••••••"
             />
           </div>
 
           <button type="submit" className="btn btn-primary" disabled={submitting} style={{ width: '100%' }}>
-            {submitting ? 'Signing in…' : 'Sign in'}
+            {submitting ? 'Signing in…' : 'Sign In'}
           </button>
         </form>
 
         <p className="auth-switch">
-          Don't have an account? <Link to="/register">Register</Link>
+          Don't have an account? <Link to="/register">Create one</Link>
         </p>
       </div>
     </div>

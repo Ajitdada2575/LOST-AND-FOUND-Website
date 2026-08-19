@@ -20,8 +20,8 @@ export default function FoundItems() {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [search, setSearch] = useState('');
   const [actionMessage, setActionMessage] = useState('');
+  const [search, setSearch] = useState('');
 
   const [showForm, setShowForm] = useState(searchParams.get('new') === '1');
   const [editingId, setEditingId] = useState(null);
@@ -119,7 +119,7 @@ export default function FoundItems() {
     setReturningId(item.found_item_id);
     try {
       await foundItemService.markFoundItemReturned(item.found_item_id);
-      setActionMessage(`"${item.title}" was marked as returned.`);
+      setActionMessage(`✅ "${item.title}" was marked as returned!`);
       await loadItems();
     } catch (err) {
       setError(err.message || 'Could not mark this item as returned.');
@@ -129,146 +129,180 @@ export default function FoundItems() {
   }
 
   return (
-    <div className="container page">
-      <div className="page-header">
-        <h1>Found Items</h1>
-        <button className="btn btn-primary" onClick={openCreateForm}>
-          + Report Found Item
-        </button>
-      </div>
-
-      <div className="field" style={{ maxWidth: 360 }}>
-        <input
-          placeholder="Search found items…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-
-      {showForm && (
-        <div className="card form-panel">
-          <div className="page-header">
-            <h2>{editingId ? 'Edit Found Item' : 'Report a Found Item'}</h2>
-            <button className="btn btn-outline btn-sm" onClick={closeForm}>
-              Cancel
-            </button>
-          </div>
-
-          {formError && <div className="form-error-banner">{formError}</div>}
-
-          <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label htmlFor="title">Title</label>
-              <input id="title" name="title" value={form.title} onChange={handleChange} />
-            </div>
-            <div className="field">
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                rows={3}
-                value={form.description}
-                onChange={handleChange}
-              />
-            </div>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="found_date">Found date</label>
-                <input
-                  id="found_date"
-                  name="found_date"
-                  type="date"
-                  value={form.found_date}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="approximate_time">Approximate time</label>
-                <input
-                  id="approximate_time"
-                  name="approximate_time"
-                  type="time"
-                  value={form.approximate_time}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="field">
-                <label htmlFor="category_id">Category ID</label>
-                <input
-                  id="category_id"
-                  name="category_id"
-                  value={form.category_id}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="field">
-                <label htmlFor="location_id">Location ID</label>
-                <input
-                  id="location_id"
-                  name="location_id"
-                  value={form.location_id}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="field">
-              <label htmlFor="image_url">Image URL (optional)</label>
-              <input id="image_url" name="image_url" value={form.image_url} onChange={handleChange} />
-            </div>
-
-            <button type="submit" className="btn btn-primary" disabled={submitting}>
-              {submitting ? 'Saving…' : editingId ? 'Save Changes' : 'Report Item'}
-            </button>
-          </form>
+    <div className="page page-found-items">
+      <div className="container">
+        <div className="page-header">
+          <h1>Found Items</h1>
+          <button className="btn btn-found" onClick={openCreateForm}>
+            ➕ Report Found Item
+          </button>
         </div>
-      )}
 
-      {actionMessage && <div className="form-success-banner">{actionMessage}</div>}
-      {error && <div className="form-error-banner">{error}</div>}
+        {showForm && (
+          <div className="card form-panel">
+            <div className="page-header">
+              <h2>{editingId ? 'Edit Found Item' : 'Report a Found Item'}</h2>
+              <button className="btn btn-secondary btn-sm" onClick={closeForm}>
+                Cancel
+              </button>
+            </div>
 
-      {loading ? (
-        <div className="loading-state">Loading found items…</div>
-      ) : filteredItems.length === 0 ? (
-        <div className="empty-state">No found items found.</div>
-      ) : (
-        <div className="grid">
-          {filteredItems.map((item) => (
-            <div key={item.found_item_id} className="card item-card">
-              {item.image_url && <img src={item.image_url} alt={item.title} className="item-card-image" />}
-              <div className="item-card-body">
-                <div className="item-card-title-row">
-                  <h3>{item.title}</h3>
-                  <span className={`badge ${item.status === 'RETURNED' ? 'badge-success' : 'badge-info'}`}>
-                    {item.status}
-                  </span>
+            {formError && <div className="alert alert-error">{formError}</div>}
+
+            <form onSubmit={handleSubmit}>
+              <div className="form-row">
+                <div className="field">
+                  <label htmlFor="title">Item Title *</label>
+                  <input
+                    id="title"
+                    name="title"
+                    value={form.title}
+                    onChange={handleChange}
+                    placeholder="e.g., Black Leather Wallet"
+                  />
                 </div>
-                {item.found_date && (
-                  <p className="item-card-meta">Found on {new Date(item.found_date).toLocaleDateString()}</p>
-                )}
-                <p className="item-card-desc">{item.description}</p>
-                {item.user_id === user?.userId && (
-                  <div className="item-card-actions">
-                    <button className="btn btn-outline btn-sm" onClick={() => openEditForm(item)}>
-                      Edit
-                    </button>
-                    {item.status !== 'RETURNED' && (
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => handleMarkReturned(item)}
-                        disabled={returningId === item.found_item_id}
-                      >
-                        {returningId === item.found_item_id ? 'Marking…' : 'Mark as Returned'}
-                      </button>
-                    )}
-                  </div>
-                )}
+                <div className="field">
+                  <label htmlFor="category_id">Category ID</label>
+                  <input
+                    id="category_id"
+                    name="category_id"
+                    value={form.category_id}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
+
+              <div className="field">
+                <label htmlFor="description">Description *</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows={3}
+                  value={form.description}
+                  onChange={handleChange}
+                  placeholder="Describe the item in detail..."
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="field">
+                  <label htmlFor="found_date">Found Date *</label>
+                  <input
+                    id="found_date"
+                    name="found_date"
+                    type="date"
+                    value={form.found_date}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="approximate_time">Approximate Time</label>
+                  <input
+                    id="approximate_time"
+                    name="approximate_time"
+                    type="time"
+                    value={form.approximate_time}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="field">
+                  <label htmlFor="location_id">Location ID</label>
+                  <input
+                    id="location_id"
+                    name="location_id"
+                    value={form.location_id}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor="image_url">Image URL</label>
+                  <input
+                    id="image_url"
+                    name="image_url"
+                    value={form.image_url}
+                    onChange={handleChange}
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+
+              <button type="submit" className="btn btn-primary" disabled={submitting} style={{ minWidth: '120px' }}>
+                {submitting ? 'Saving…' : editingId ? 'Update Item' : 'Report Item'}
+              </button>
+            </form>
+          </div>
+        )}
+
+        {actionMessage && <div className="alert alert-success" style={{ marginBottom: 'var(--space-4)' }}>{actionMessage}</div>}
+        {error && <div className="alert alert-error" style={{ marginBottom: 'var(--space-4)' }}>{error}</div>}
+
+        <div className="search-section">
+          <div className="search-input-wrapper">
+            <span className="search-icon">🔍</span>
+            <input
+              type="text"
+              placeholder="Search found items..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
-      )}
+
+        {loading ? (
+          <div className="loading-state">Loading found items...</div>
+        ) : filteredItems.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">🟢</div>
+            <h3>{search ? 'No matches found' : 'No found items yet'}</h3>
+            <p>{search ? 'Try a different search' : 'Help reunite found items with their owners'}</p>
+            {!search && (
+              <button className="btn btn-found" onClick={openCreateForm} style={{ marginTop: 'var(--space-3)' }}>
+                Report Found Item
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="grid">
+            {filteredItems.map((item) => (
+              <div key={item.found_item_id} className="card card-found item-card">
+                {item.image_url && <img src={item.image_url} alt={item.title} className="item-card-image" />}
+                <div className="item-card-body">
+                  <div className="item-card-header">
+                    <h3>{item.title}</h3>
+                    <span className={`badge ${item.status === 'RETURNED' ? 'badge-success' : 'badge-found'}`}>
+                      {item.status === 'RETURNED' ? '✓ Returned' : '🟢 Found'}
+                    </span>
+                  </div>
+                  <div className="item-card-meta">
+                    📅 {item.found_date ? new Date(item.found_date).toLocaleDateString() : 'Unknown'}
+                    {item.approximate_time && ` · ⏰ ${item.approximate_time}`}
+                  </div>
+                  <p className="item-card-description">{item.description}</p>
+                  {item.user_id === user?.userId && (
+                    <div className="item-card-actions">
+                      <button className="btn btn-secondary btn-sm" onClick={() => openEditForm(item)}>
+                        ✏️ Edit
+                      </button>
+                      {item.status !== 'RETURNED' && (
+                        <button
+                          className="btn btn-found btn-sm"
+                          onClick={() => handleMarkReturned(item)}
+                          disabled={returningId === item.found_item_id}
+                        >
+                          {returningId === item.found_item_id ? 'Marking…' : '✓ Mark Returned'}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
