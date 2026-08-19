@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import * as foundItemService from '../services/foundItemService';
+import { CATEGORIES, LOCATIONS } from '../constants/itemOptions';
 
 const EMPTY_FORM = {
   title: '',
@@ -162,13 +163,20 @@ export default function FoundItems() {
                   />
                 </div>
                 <div className="field">
-                  <label htmlFor="category_id">Category ID</label>
-                  <input
+                  <label htmlFor="category_id">Category</label>
+                  <select
                     id="category_id"
                     name="category_id"
                     value={form.category_id}
                     onChange={handleChange}
-                  />
+                  >
+                    <option value="">Select a category…</option>
+                    {CATEGORIES.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} (ID {c.id})
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -209,13 +217,20 @@ export default function FoundItems() {
 
               <div className="form-row">
                 <div className="field">
-                  <label htmlFor="location_id">Location ID</label>
-                  <input
+                  <label htmlFor="location_id">Location</label>
+                  <select
                     id="location_id"
                     name="location_id"
                     value={form.location_id}
                     onChange={handleChange}
-                  />
+                  >
+                    <option value="">Select a location…</option>
+                    {LOCATIONS.map((l) => (
+                      <option key={l.id} value={l.id}>
+                        {l.name} (ID {l.id})
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="field">
                   <label htmlFor="image_url">Image URL</label>
